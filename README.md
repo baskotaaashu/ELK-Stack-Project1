@@ -27,7 +27,7 @@ This document contains the following details:
 The main purpose of this network is to expose a load-balanced and monitored instance of DVWA, the D*mn Vulnerable Web Application.
 
 Load balancing ensures that the application will be highly available, in addition to restricting access to the network.
-- _Load Balancers protect the availability aspect of the security.Jump box acts as a gateway to other resources in the network that are not exposed to the internet and hence,used to manage and access other resources securely. Usually jomp box is a hardened and monitored device_.
+- _Load Balancers protect the availability aspect of the security. Jump box acts as a gateway to other resources in the network that are not exposed to the internet and hence, used to manage and access other resources securely. Usually, jump box is a hardened and monitored device_.
 
 Integrating an ELK server allows users to easily monitor the vulnerable VMs for changes to the metrics and system logs.
 - _Filebeat watches for the log events_.
@@ -74,7 +74,7 @@ The playbook implements the following tasks:
 - _Set the memory map area for the VM_
 - _Install python docker module_
 - _Download the ELK Stack image and map corresponding ports_
-- _Ensure VM always starts with docker service enaled_
+- _Ensure VM always starts with docker service enabled_
 
 The following screenshot displays the result of running `docker ps` after successfully configuring the ELK instance.
 
@@ -82,9 +82,9 @@ The following screenshot displays the result of running `docker ps` after succes
 
 ### Target Machines & Beats
 This ELK server is configured to monitor the following machines:
-- _10.0.0.5_
-- _10.0.0.6_
-- _10.0.0.7_
+- _10.0.0.5 (Web-1)_
+- _10.0.0.6 (Web-2)_
+- _10.0.0.7 (Web-3)_
 
 We have installed the following Beats on these machines:
 - _Filebeat_
@@ -95,12 +95,14 @@ These Beats allow us to collect the following information from each machine:
   In this project,Filebeat collects and parse logs written by local syslog server of the webservers.
   For example, we can track the ssh login attempts in the webservers._
   _The following screenshot displays the successfull test ssh login in the webserver Web-2 from Kibana portal._
+
   ![Kibana dilspaying ssh login attempt on Web-2](Diagrams/web-2_ssh_login_attempt.png)
 
 - _Metric beat monitors the server and the services they host and collect their metrics.
-  _In this project, Metricbeat gathers the metrcis from the docker container dvwa(d*mn vuulnerable web application)._
+  _In this project, Metricbeat gathers the metrics from the docker container dvwa(d*mn vuulnerable web application)._
   _For example, we can track the cpu usage of the dvwa docket container._
   _The following screenshot displays the cpu usage of dvwa container from the Kibana portal._
+
    ![Kibana displaying cpu usage of DVWA container](Diagrams/cpu_usage_dvwa.png)
 
 ### Using the Playbook
