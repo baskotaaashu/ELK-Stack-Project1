@@ -1,0 +1,15 @@
+##Changes made in ansible hosts file
+
+# A collection of hosts belonging to the 'webservers' group
+
+[webservers]
+
+10.0.0.5 ansible_python_interpreter=/usr/bin/python3
+10.0.0.6 ansible_python_interpreter=/usr/bin/python3
+10.0.0.7 ansible_python_interpreter=/usr/bin/python3
+
+#Other hosts
+
+[elk]
+
+10.1.0.4 ansible_python_interpreter=/usr/bin/python3

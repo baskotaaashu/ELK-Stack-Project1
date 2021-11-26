@@ -1,0 +1,13 @@
+
+#ElasticsearchOutput
+
+output.elasticsearch:
+
+  hosts: ["10.1.0.4:9200"]
+  username: "elastic"
+  password: "changeme"
+
+#Pointed elk virtual machine for kibana host
+
+setup.kibana:
+  host: "10.1.0.4:5601"

@@ -1,0 +1,5 @@
+#Changes made in ansible.cfg file
+
+# default user to use for playbooks if user is not specified
+
+remote_user = redhatadmin
