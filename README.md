@@ -92,16 +92,13 @@ We have installed the following Beats on these machines:
 
 These Beats allow us to collect the following information from each machine:
 - _Filebeat monitors the log files and collects log events from the host.
-  In this project,Filebeat collects and parse logs written by local syslog server of the webservers.
-  For example, we can track the ssh login attempts in the webservers._
-  _The following screenshot displays the successfull test ssh login in the webserver Web-2 from Kibana portal._
+  In this project,Filebeat collects and parse logs written by local syslog server of the webservers. For example, we can track the ssh login attempts in the webservers. The following screenshot displays the successful test ssh login in the webserver Web-2 from Kibana portal._
 
   ![Kibana dilspaying ssh login attempt on Web-2](Diagrams/web-2_ssh_login_attempt.png)
 
-- _Metric beat monitors the server and the services they host and collect their metrics.
+- _Metric beat monitors the server and the services they host and collect their metrics._
   _In this project, Metricbeat gathers the metrics from the docker container dvwa(d*mn vuulnerable web application)._
-  _For example, we can track the cpu usage of the dvwa docket container._
-  _The following screenshot displays the cpu usage of dvwa container from the Kibana portal._
+  _For example, we can track the cpu usage of the dvwa docket container. The following screenshot displays the cpu usage of dvwa container from the Kibana portal._
 
    ![Kibana displaying cpu usage of DVWA container](Diagrams/cpu_usage_dvwa.png)
 
@@ -109,10 +106,10 @@ These Beats allow us to collect the following information from each machine:
 In order to use the playbook, you will need to have an Ansible control node already configured. Assuming you have such a control node provisioned: 
 
 SSH into the control node and follow the steps below:
-- Copy the install-elk.yml file to /etc/ansible/.
-- Update the /etc/ansible/hosts file to include the ip address of elk stack VM (ElkStackVM1) 
-- Run the playbook, and navigate to http://20.92.113.141:5601/app/kibana to check that the installation worked as expected.
-  (where 20.92.113.141 is the public facing ip of ElkStackVM1 and 5601 is the port over which Kibana, frontend portal of ELK stack is accessible)
+- _Copy the install-elk.yml file to /etc/ansible/._
+- _Update the /etc/ansible/hosts file to include the ip address of elk stack VM (ElkStackVM1)_
+- _Run the playbook, and navigate to http://20.92.113.141:5601/app/kibana to check that the installation worked as expected
+  (where 20.92.113.141 is the public facing ip of ElkStackVM1 and 5601 is the port over which Kibana, frontend portal of ELK stack is accessible)._
 
 ### Commands used
 
