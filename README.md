@@ -85,6 +85,7 @@ This ELK server is configured to monitor the following machines:
 - _10.0.0.5 (Web-1)_
 - _10.0.0.6 (Web-2)_
 - _10.0.0.7 (Web-3)_
+- _10.1.0.4 (ElkStackVM1)_
 
 We have installed the following Beats on these machines:
 - _Filebeat_
@@ -108,6 +109,8 @@ In order to use the playbook, you will need to have an Ansible control node alre
 SSH into the control node and follow the steps below:
 - _Copy the install-elk.yml file to /etc/ansible/._
 - _Update the /etc/ansible/hosts file to include the ip address of elk stack VM (ElkStackVM1)_
+  - _add ip address if elk stack VM under [elk] hosts in hosts file (we added the ip address of all three vulnerable web servers under [webserver] hosts._
+  ![elk and webserver hosts](Diagrams/hosts.png)
 - _Run the playbook, and navigate to http://20.92.113.141:5601/app/kibana to check that the installation worked as expected
   (where 20.92.113.141 is the public facing ip of ElkStackVM1 and 5601 is the port over which Kibana, frontend portal of ELK stack is accessible)._
 
