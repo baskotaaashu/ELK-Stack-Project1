@@ -68,14 +68,14 @@ A summary of the access policies in place can be found in the table below.
 
 ### JumpBox Configuration
 
-As mentioned before,Jump box acts as a gateway to other resources in the network that are not exposed to the internet and hence, used to manage and access other resources securely. Usually, jump box is a hardened and monitored device.
-In this project,JumpBoxProvisioner VM is the jump box and it runs an ansible container.The follwoing steps are completed on JumpBoxProvisioner:
+As mentioned before, Jump box acts as a gateway to other resources in the network that are not exposed to the internet and hence, used to manage and access other resources securely. Usually, jump box is a hardened and monitored device.
+In this project, JumpBoxProvisioner VM is the jump box and it runs an ansible container. The follwoing steps are completed on JumpBoxProvisioner:
 
-- _Update the host,JumpBoxProvisioner._
+- _Update the host, JumpBoxProvisioner._
 - _Install docker._
 - _Pull and run ansible container._
 - _Configure necessary access control from Azure Portal._
-- _SSH to jump box from whitelisted IP to verify the access._
+- _SSH to JumpBoxProvisioner from whitelisted IP to verify the access._
 - _Generate ssh key to access other resources in the virtual network._
 - _Verify access to other resources in the virtual network._
 
@@ -222,7 +222,7 @@ SSH into the control node and follow the steps below:
 
 - `ssh redhatadmin@40.127.89.152`
 
-#### Ensure the control node can reach all hosts listed on ansible hosts file
+#### To ensure the control node can reach all hosts listed on ansible hosts file
 
 - `ansible all -m ping`
 
