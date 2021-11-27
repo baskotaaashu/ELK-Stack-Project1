@@ -169,7 +169,7 @@ SSH into the control node and follow the steps below:
 - _Copy the metricbeat-config.yml file to /etc/ansible/file/._
 - _Copy the metricbeat-playbook.yml file to /etc/ansible/roles/._
 - _The /etc/ansible/hosts file already includes the ip address vulnerable webservers(Web-1,Web-2,Web-3)_
-- _Run the playbook[metricbeat-playbook.yml](Ansible/metricbeat-playbook.yml), and navigate to http://20.92.113.141:5601/app/kibana#/home/tutorial/dockerMetrics and under **DEB** section, click **Check Data** for **Module Status**.The successful installation should display the following output._
+- _Run the playbook [metricbeat-playbook.yml](Ansible/metricbeat-playbook.yml) , and navigate to http://20.92.113.141:5601/app/kibana#/home/tutorial/dockerMetrics and under **DEB** section, click **Check Data** for **Module Status**.The successful installation should display the following output._
   
   ![Module_Status](Diagrams/Module_Status.png)
   
