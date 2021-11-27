@@ -41,16 +41,16 @@ The configuration details of each machine may be found below.
 | Name               | Function                        | IP Address | Operating System     |
 |--------------------|---------------------------------|------------|----------------------|
 | JumpBoxProvisioner | Gateway                         | 10.0.0.4   | Linux(Ubuntu 18.04)  |
-| Web-1              | Vulnerable Webserver 1          | 10.0.0.5   | Linux(Ubuntu 18.04)  |
-| Web-2              | Vulnerable Webserver 2          | 10.0.0.6   | Linux(Ubuntu 18.04)  |
-| Web-3              | Vulnerable Webserver 3          | 10.0.0.7   | Linux(Ubuntu 18.04)  |
+| Web-1              | Vulnerable Webserver 1(DVWA)    | 10.0.0.5   | Linux(Ubuntu 18.04)  |
+| Web-2              | Vulnerable Webserver 2(DVWA)    | 10.0.0.6   | Linux(Ubuntu 18.04)  |
+| Web-3              | Vulnerable Webserver 3(DVWA)    | 10.0.0.7   | Linux(Ubuntu 18.04)  |
 | ElkStackVM1        | System Monitoring and Analytics | 10.1.0.4   | Linux(Ubuntu 18.04)  |
 
 ### Access Policies
 
 The machines on the internal network are not exposed to the public Internet. 
 
-Only the JumpBoxProvisioner machine can accept connections from the Internet. Access to this machine is only allowed from the following IP addresses:
+Only the JumpBoxProvisioner machine can accept connections from the Internet. Access to this machine is only allowed from the redhatadmin's public IP addresses,which is as follows:
 - _124.168.195.197_
 
 Machines within the network can only be accessed by JumpBoxProvisioner.
@@ -69,7 +69,7 @@ A summary of the access policies in place can be found in the table below.
 ### DVWA Configuration
 
 Ansible was used to automate configuration of the vulnerable webservers. No configuration was performed manually, which is advantageous because ansible uses
-playbooks to setup and update conifgurations in multiple host machines easily and quickly.It also ensures that all three webservers have same configuration.The playbook used for DVWA configuration was [pentest.yml](Ansible/pentest.yml). 
+playbooks to setup and update conifgurations in multiple host machines easily and quickly. It also ensures that all three webservers have same configuration. The playbook used for DVWA configuration was [pentest.yml](Ansible/pentest.yml). 
 
 The playbook implements the following tasks on all three webservers:
 - _Install the docker_
@@ -78,14 +78,14 @@ The playbook implements the following tasks on all three webservers:
 - _Download the image and launch vulnerable webserver container_
 - _Ensure VM always starts with docker service enabled_
 
-The following screenshot displays the result of running `docker ps` after successfully configuring vulnerable webserver container.The output is obtained from vulnerable webserver Web-1 but output from other two server should be similar.
+The following screenshot displays the result of running `docker ps` after successfully configuring vulnerable webserver container. The output is obtained from vulnerable webserver Web-1 but output from other two servers should be similar.
 
 ![Successful DVWA Configuration](Diagrams/dvwa_docker_ps_output.png)
 
 ### Elk Configuration
 
 Ansible was used to automate configuration of the ELK machine. No configuration was performed manually, which is advantageous because ansible uses
-playbooks to setup and update conifgurations in multiple host machines easily and quickly. Playbooks are easy to read, write and understand.The playbook used for Elk configuration was [install-elk.yml](Ansible/install-elk.yml) .
+playbooks to setup and update conifgurations in multiple host machines easily and quickly. Playbooks are easy to read, write and understand.The playbook used for Elk configuration was [install-elk.yml](Ansible/install-elk.yml).
 
 The playbook implements the following tasks:
 - _Install the docker in the ElkStackVM1_
@@ -125,15 +125,50 @@ These Beats allow us to collect the following information from each machine:
 In order to use the playbook, you will need to have an Ansible control node already configured.In this project, control node is the **JumpBoxProvisioner VM**.Assuming you have such a control node provisioned: 
 
 SSH into the control node and follow the steps below:
+
+#### Playbook to configure DVWA
+
+- _Copy the pentest.yml file to /etc/ansible/._
+- _Update the /etc/ansible/hosts file to include the ip addresses of vulnerable webservers(Web-1,Web-2,Web-3)_
+  - _Add ip address of three vulnerable webservers under [webservers] hosts in hosts file._
+
+  ![webserver hosts](Diagrams/hosts_webservers.png)
+- _Run the playbook, and navigate to http://20.92.113.141:5601/app/kibana to check that the installation worked as expected as shown in the image below.
+  (where 20.92.113.141 is the public facing ip of ElkStackVM1 and 5601 is the port over which Kibana, frontend portal of ELK stack is accessible)._
+  ![Successful_DVWA_Setup](Diagrams/Successful_DVWA_Setup.png)
+
+#### Playbook to configure Elk Stack
+
 - _Copy the install-elk.yml file to /etc/ansible/._
 - _Update the /etc/ansible/hosts file to include the ip address of elk stack VM (ElkStackVM1)_
   - _Add ip address of ElkStackVM1 under [elk] hosts in hosts file (we added the ip address of all three vulnerable web servers under [webserver] hosts._
 
-  ![elk and webserver hosts](Diagrams/hosts.png)
+  ![elk hosts](Diagrams/hosts_elk.png)
 - _Run the playbook, and navigate to http://20.92.113.141:5601/app/kibana to check that the installation worked as expected as shown in the image below.
   (where 20.92.113.141 is the public facing ip of ElkStackVM1 and 5601 is the port over which Kibana, frontend portal of ELK stack is accessible)._
   ![Successful_ELK_Setup](Diagrams/Successful_ELK_Setup.png)
   
+#### Playbook to steup filebeat on vulnerable webservers
+
+- _Copy the filebeat-config.yml file to /etc/ansible/file/._
+- _Copy the filebeat-playbook.yml file to /etc/ansible/roles/._
+- _The /etc/ansible/hosts file already includes the ip address vulnerable webservers(Web-1,Web-2,Web-3)_
+- _Run the playbook[filebeat-playbook.yml](Ansible/filebeat-playbook.yml), and navigate to http://20.92.113.141:5601/app/kibana#/home/tutorial/systemLogs and under DEB, click **Check Data** for Module Status.The successful installation should display the following output.
+  ![Module_Status](Diagrams/Module_Status)
+  _This indicates that Elk Stack is successfully receiving data from Filebeat system module from three vulnerable webservers._
+- _Click on **System logs dashboard** to explore system log data from three vulnerable webservers.The screenshot below shows the syslog dashboard in Kibana._
+  ![Kibana_syslog_dashboard](Diagrans/Kibana_syslog_dashboard.png)
+
+#### Playbook to steup metricbeat on vulnerable webservers
+
+- _Copy the metricbeat-config.yml file to /etc/ansible/file/._
+- _Copy the metricbeat-playbook.yml file to /etc/ansible/roles/._
+- _The /etc/ansible/hosts file already includes the ip address vulnerable webservers(Web-1,Web-2,Web-3)_
+- _Run the playbook[metricbeat-playbook.yml](Ansible/metricbeat-playbook.yml), and navigate to http://20.92.113.141:5601/app/kibana#/home/tutorial/dockerMetrics and under DEB, click **Check Data** for Module Status.The successful installation should display the following output.
+  ![Module_Status](Diagrams/Module_Status)
+  _This indicates that Elk Stack is successfully receiving data from Metricbeat docker module from three vulnerable webservers._
+- _Click on **Docker metric dashboard** to explore docker metrics data from three vulnerable webservers._
+  ![Kibana_metrics_dashboard](Diagrams/Kibana_metrics_dashboard.png)
 
 ### Commands used
 
