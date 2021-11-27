@@ -6,6 +6,8 @@ The files in this repository were used to configure the network depicted below.
 
 These files have been tested and used to generate a live ELK deployment on Azure. They can be used to either recreate the entire deployment pictured above. Alternatively, select portions of the playbook file may be used to install only certain pieces of it, such as Filebeat.
 
+  - [hosts.txt](Ansible/hosts.txt)
+  - [ansible_cfg.txt](Ansbile/ansible_cfg.txt)
   - [pentest.yml](Ansible/pentest.yml)
   - [install-elk.yml](Ansible/install-elk.yml)
   - [filebeat-config.yml](Ansible/filebeat-config.yml)
@@ -16,6 +18,7 @@ These files have been tested and used to generate a live ELK deployment on Azure
 This document contains the following details:
  - Description of the Topology
  - Access Policies
+ - DVWA Configuration
  - ELK Configuration
    - Beats in Use
    - Machines Being Monitored
@@ -63,10 +66,26 @@ A summary of the access policies in place can be found in the table below.
 | ElkStackVM1        | Yes(Port 5601)      | 124.168.195.197      |
 | ElkStackVM1        | No                  | 10.0.0.4             |
 
+### DVWA Configuration
+
+Ansible was used to automate configuration of the vulnerable webservers. No configuration was performed manually, which is advantageous because ansible uses
+playbooks to setup and update conifgurations in multiple host machines easily and quickly.It also ensures that all three webservers have same configuration.The playbook used for DVWA configuration was [pentest.yml](Ansible/pentest.yml). 
+
+The playbook implements the following tasks on all three webservers:
+- _Install the docker_
+- _Install python package manager: pip3_
+- _Install python docker module_
+- _Download the image and launch vulnerable webserver container_
+- _Ensure VM always starts with docker service enabled_
+
+The following screenshot displays the result of running `docker ps` after successfully configuring vulnerable webserver container.The output is obtained from vulnerable webserver Web-1 but output from other two server should be similar.
+
+![Successful DVWA Configuration](Diagrams/dvwa_docker_ps_output.png)
+
 ### Elk Configuration
 
 Ansible was used to automate configuration of the ELK machine. No configuration was performed manually, which is advantageous because ansible uses
-playbooks to setup and update conifgurations in multiple host machines easily and quickly. Playbooks are easy to read, write and understand.
+playbooks to setup and update conifgurations in multiple host machines easily and quickly. Playbooks are easy to read, write and understand.The playbook used for Elk configuration was [install-elk.yml](Ansible/install-elk.yml) .
 
 The playbook implements the following tasks:
 - _Install the docker in the ElkStackVM1_
@@ -85,7 +104,6 @@ This ELK server is configured to monitor the following machines:
 - _10.0.0.5 (Web-1)_
 - _10.0.0.6 (Web-2)_
 - _10.0.0.7 (Web-3)_
-- _10.1.0.4 (ElkStackVM1)_
 
 We have installed the following Beats on these machines:
 - _Filebeat_
@@ -104,15 +122,18 @@ These Beats allow us to collect the following information from each machine:
    ![Kibana displaying cpu usage of DVWA container](Diagrams/cpu_usage_dvwa.png)
 
 ### Using the Playbook
-In order to use the playbook, you will need to have an Ansible control node already configured. Assuming you have such a control node provisioned: 
+In order to use the playbook, you will need to have an Ansible control node already configured.In this project, control node is the **JumpBoxProvisioner VM**.Assuming you have such a control node provisioned: 
 
 SSH into the control node and follow the steps below:
 - _Copy the install-elk.yml file to /etc/ansible/._
 - _Update the /etc/ansible/hosts file to include the ip address of elk stack VM (ElkStackVM1)_
-  - _add ip address if elk stack VM under [elk] hosts in hosts file (we added the ip address of all three vulnerable web servers under [webserver] hosts._
+  - _Add ip address of ElkStackVM1 under [elk] hosts in hosts file (we added the ip address of all three vulnerable web servers under [webserver] hosts._
+
   ![elk and webserver hosts](Diagrams/hosts.png)
-- _Run the playbook, and navigate to http://20.92.113.141:5601/app/kibana to check that the installation worked as expected
+- _Run the playbook, and navigate to http://20.92.113.141:5601/app/kibana to check that the installation worked as expected as shown in the image below.
   (where 20.92.113.141 is the public facing ip of ElkStackVM1 and 5601 is the port over which Kibana, frontend portal of ELK stack is accessible)._
+  ![Successful_ELK_Setup](Diagrams/Successful_ELK_Setup.png)
+  
 
 ### Commands used
 
@@ -123,6 +144,10 @@ SSH into the control node and follow the steps below:
 #### To ssh JumpBoxProvisioner
 
 - `ssh redhatadmin@40.127.89.152`
+
+#### Ensure the control node can reach all hosts listed on ansible hosts file
+
+- `ansible all -m ping`
 
 #### To list available containers
 
