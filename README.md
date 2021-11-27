@@ -66,6 +66,19 @@ A summary of the access policies in place can be found in the table below.
 | ElkStackVM1        | Yes(Port 5601)      | 124.168.195.197      |
 | ElkStackVM1        | No                  | 10.0.0.4             |
 
+### JumpBox Configuration
+
+As mentioned before,Jump box acts as a gateway to other resources in the network that are not exposed to the internet and hence, used to manage and access other resources securely. Usually, jump box is a hardened and monitored device.
+In this project,JumpBoxProvisioner VM is the jump box and it runs an ansible container.The follwoing steps are completed on JumpBoxProvisioner:
+
+- _Update the host,JumpBoxProvisioner._
+- _Install docker._
+- _Pull and run ansible container._
+- _Configure necessary access control from Azure Portal._
+- _SSH to jump box from whitelisted IP to verify the access._
+- _Generate ssh key to access other resources in the virtual network._
+- _Verify access to other resources in the virtual network._
+
 ### DVWA Configuration
 
 Ansible was used to automate configuration of the vulnerable webservers. No configuration was performed manually, which is advantageous because ansible uses
@@ -179,6 +192,27 @@ SSH into the control node and follow the steps below:
   ![Kibana_metrics_dashboard](Diagrams/Kibana_metrics_dashboard.png)
 
 ### Commands used
+
+
+#### To update the host
+
+- `sudo apt update`
+
+#### To install docker
+
+- `sudo apt install docker.io`
+
+#### To verify the status of docker service 
+
+- `sudo systemctl status docker`
+
+#### To pull the ansible container
+
+- `sudo docker pull cyberxsecurity/ansible`
+
+#### To start the container
+
+- `docker run -it cyberxsecurity/ansible /bin/bash`
 
 #### To generate ssh key
 
