@@ -72,11 +72,11 @@ Ansible was used to automate configuration of the vulnerable webservers. No conf
 playbooks to setup and update conifgurations in multiple host machines easily and quickly. It also ensures that all three webservers have same configuration. The playbook used for DVWA configuration was [pentest.yml](Ansible/pentest.yml). 
 
 The playbook implements the following tasks on all three webservers:
-- _Install the docker_
-- _Install python package manager: pip3_
-- _Install python docker module_
-- _Download the image and launch vulnerable webserver container_
-- _Ensure VM always starts with docker service enabled_
+- _Install the docker._
+- _Install python package manager: pip3._
+- _Install python docker module._
+- _Download the image and launch vulnerable webserver container._
+- _Ensure VM always starts with docker service enabled._
 
 The following screenshot displays the result of running `docker ps` after successfully configuring vulnerable webserver container. The output is obtained from vulnerable webserver Web-1 but output from other two servers should be similar.
 
@@ -87,13 +87,13 @@ The following screenshot displays the result of running `docker ps` after succes
 Ansible was used to automate configuration of the ELK machine. No configuration was performed manually, which is advantageous because ansible uses
 playbooks to setup and update conifgurations in multiple host machines easily and quickly. Playbooks are easy to read, write and understand.The playbook used for Elk configuration was [install-elk.yml](Ansible/install-elk.yml).
 
-The playbook implements the following tasks:
-- _Install the docker in the ElkStackVM1_
-- _Install python package manager: pip3_
-- _Set the memory map area for the VM_
-- _Install python docker module_
-- _Download the ELK Stack image and map corresponding ports_
-- _Ensure VM always starts with docker service enabled_
+The playbook implements the following tasks on ElkStackVM1:
+- _Install the docker._
+- _Install python package manager: pip3._
+- _Set the memory map area for the VM._
+- _Install python docker module._
+- _Download and launch the ELK Stack image and map corresponding ports._
+- _Ensure VM always starts with docker service enabled._
 
 The following screenshot displays the result of running `docker ps` after successfully configuring the ELK instance.
 
@@ -111,11 +111,11 @@ We have installed the following Beats on these machines:
 
 These Beats allow us to collect the following information from each machine:
 - _Filebeat monitors the log files and collects log events from the host.
-  In this project,Filebeat collects and parse logs written by local syslog server of the webservers. For example, we can track the ssh login attempts in the webservers. The following screenshot displays the successful test ssh login in the webserver Web-2 from Kibana portal._
+  In this project,Filebeat collects and parse logs written by local syslog server of the webservers. For example, we can track the ssh login attempts in the webservers. The following screenshot displays the successful ssh login in the webserver Web-2 from Kibana portal._
 
   ![Kibana dilspaying ssh login attempt on Web-2](Diagrams/web-2_ssh_login_attempt.png)
 
-- _Metric beat monitors the server and the services they host and collect their metrics._
+- _Metricbeat monitors the server and the services they host and collect their metrics._
   _In this project, Metricbeat gathers the metrics from the docker container dvwa(d*mn vuulnerable web application)._
   _For example, we can track the cpu usage of the dvwa docket container. The following screenshot displays the cpu usage of dvwa container from the Kibana portal._
 
@@ -133,19 +133,21 @@ SSH into the control node and follow the steps below:
   - _Add ip address of three vulnerable webservers under [webservers] hosts in hosts file._
 
   ![webserver hosts](Diagrams/hosts_webservers.png)
-- _Run the playbook, and navigate to http://20.92.113.141:5601/app/kibana to check that the installation worked as expected as shown in the image below.
-  (where 20.92.113.141 is the public facing ip of ElkStackVM1 and 5601 is the port over which Kibana, frontend portal of ELK stack is accessible)._
+- _Run the playbook, and navigate to http://13.70.142.168/setup.php to check that the installation worked as expected as shown in the image below.
+  (where 13.70.142.168 is frontend ip of load balancer which has Web-1,Web-2,Web-3 vulnerable webservers in its backend pool.)_
+
   ![Successful_DVWA_Setup](Diagrams/Successful_DVWA_Setup.png)
 
 #### Playbook to configure Elk Stack
 
 - _Copy the install-elk.yml file to /etc/ansible/._
 - _Update the /etc/ansible/hosts file to include the ip address of elk stack VM (ElkStackVM1)_
-  - _Add ip address of ElkStackVM1 under [elk] hosts in hosts file (we added the ip address of all three vulnerable web servers under [webserver] hosts._
+  - _Add ip address of ElkStackVM1 under [elk] hosts in hosts file (we added the ip address of all three vulnerable web servers under [webserver] hosts)._
 
   ![elk hosts](Diagrams/hosts_elk.png)
 - _Run the playbook, and navigate to http://20.92.113.141:5601/app/kibana to check that the installation worked as expected as shown in the image below.
   (where 20.92.113.141 is the public facing ip of ElkStackVM1 and 5601 is the port over which Kibana, frontend portal of ELK stack is accessible)._
+
   ![Successful_ELK_Setup](Diagrams/Successful_ELK_Setup.png)
   
 #### Playbook to steup filebeat on vulnerable webservers
@@ -153,21 +155,27 @@ SSH into the control node and follow the steps below:
 - _Copy the filebeat-config.yml file to /etc/ansible/file/._
 - _Copy the filebeat-playbook.yml file to /etc/ansible/roles/._
 - _The /etc/ansible/hosts file already includes the ip address vulnerable webservers(Web-1,Web-2,Web-3)_
-- _Run the playbook[filebeat-playbook.yml](Ansible/filebeat-playbook.yml), and navigate to http://20.92.113.141:5601/app/kibana#/home/tutorial/systemLogs and under DEB, click **Check Data** for Module Status.The successful installation should display the following output.
-  ![Module_Status](Diagrams/Module_Status)
+- _Run the playbook [filebeat-playbook.yml](Ansible/filebeat-playbook.yml) , and navigate to http://20.92.113.141:5601/app/kibana#/home/tutorial/systemLogs and under **DEB** section, click **Check Data** for **Module Status**.The successful installation should display the following output.
+
+  ![Module_Status](Diagrams/Module_Status.png)
+
   _This indicates that Elk Stack is successfully receiving data from Filebeat system module from three vulnerable webservers._
 - _Click on **System logs dashboard** to explore system log data from three vulnerable webservers.The screenshot below shows the syslog dashboard in Kibana._
-  ![Kibana_syslog_dashboard](Diagrans/Kibana_syslog_dashboard.png)
+
+  ![Kibana_syslog_dashboard](Diagrams/Kibana_syslog_dashboard.png)
 
 #### Playbook to steup metricbeat on vulnerable webservers
 
 - _Copy the metricbeat-config.yml file to /etc/ansible/file/._
 - _Copy the metricbeat-playbook.yml file to /etc/ansible/roles/._
 - _The /etc/ansible/hosts file already includes the ip address vulnerable webservers(Web-1,Web-2,Web-3)_
-- _Run the playbook[metricbeat-playbook.yml](Ansible/metricbeat-playbook.yml), and navigate to http://20.92.113.141:5601/app/kibana#/home/tutorial/dockerMetrics and under DEB, click **Check Data** for Module Status.The successful installation should display the following output.
-  ![Module_Status](Diagrams/Module_Status)
+- _Run the playbook[metricbeat-playbook.yml](Ansible/metricbeat-playbook.yml), and navigate to http://20.92.113.141:5601/app/kibana#/home/tutorial/dockerMetrics and under **DEB** section, click **Check Data** for Module Status.The successful installation should display the following output.
+  
+  ![Module_Status](Diagrams/Module_Status.png)
+  
   _This indicates that Elk Stack is successfully receiving data from Metricbeat docker module from three vulnerable webservers._
 - _Click on **Docker metric dashboard** to explore docker metrics data from three vulnerable webservers._
+
   ![Kibana_metrics_dashboard](Diagrams/Kibana_metrics_dashboard.png)
 
 ### Commands used
